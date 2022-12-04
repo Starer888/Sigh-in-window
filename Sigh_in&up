@@ -1,0 +1,79 @@
+import tkinter as tk
+from tkinter import messagebox
+
+window = tk.Tk()
+window.title('Welcome you')
+window.geometry('600x300')
+
+canvas = tk.Canvas(window,height=200,width=400)
+image_file = tk.PhotoImage(file='welcome.gif')
+canvas.create_image(0,0,anchor='nw',image=image_file)
+canvas.pack()
+
+l_user_name = tk.Label(window,text='User name')
+l_password = tk.Label(window,text='Password')
+l_user_name.place(x=150,y=150)
+l_password.place(x=150,y=200)
+
+var_user_name = tk.StringVar()
+var_user_name.set('example@python.com')
+var_password = tk.StringVar()
+entry_user = tk.Entry(window,textvariable=var_user_name)
+entry_pass = tk.Entry(window,textvariable=var_password,show='*')
+entry_user.place(x=250,y=150)
+entry_pass.place(x=250,y=200)
+
+#用户名和密码都保持在一个字典中
+mydic = {'admin':'admin','123@python.com':'123','456@python.com':'456'}
+
+def login_command():
+    user_name = var_user_name.get()
+    user_pwd = var_password.get()
+    if user_name in mydic:
+        if mydic[user_name] == user_pwd:
+            tk.messagebox.showinfo(title='Welcom', message='How are you? ' + user_name)
+        else:
+            tk.messagebox.showerror(title='Error',message='Sorry, your password is wrong. Pls try again!')
+    else:
+        is_sigh_up = tk.messagebox.askyesno(message='Your account have not been registrated, do you want to sigh up?')
+        if is_sigh_up:
+            regi_command()
+
+def regi_command():
+    def sigh_to_dic():
+        nn = new_user_name.get()
+        np = new_password.get()
+        npf = confirm_password.get()
+        if nn not in mydic:
+            if np == npf:
+                mydic[nn] = np
+                tk.messagebox.showinfo('Welcome','Congratulations, you have successfully sighed up!')
+                window_sigh_up.destroy()
+            else:
+                tk.messagebox.showerror(title='Error',message='Sorry, both of the password are not same.\n Pls input correct password again!')
+        else:
+            tk.messagebox.showerror('Error',message='Sorry, the user has already sigh up!')
+
+    window_sigh_up = tk.Toplevel(window)
+    window_sigh_up.title('Sigh up')
+    window_sigh_up.geometry('350x200')
+    #在注册窗口建3个lable
+    new_user_name = tk.Label(window_sigh_up,text='New user name').place(x=10,y=10)
+    new_password = tk.Label(window_sigh_up,text='New password').place(x=10,y=50)
+    confirm_password = tk.Label(window_sigh_up,text='Confirm password').place(x=10,y=90)
+    #在注册窗口建3个entry输入框    
+    new_user_name = tk.StringVar()
+    new_password = tk.StringVar()
+    confirm_password = tk.StringVar()
+    tk.Entry(window_sigh_up,textvariable=new_user_name).place(x=150,y=10)
+    tk.Entry(window_sigh_up,textvariable=new_password,show='*').place(x=150,y=50)
+    tk.Entry(window_sigh_up,textvariable=confirm_password,show='*').place(x=150,y=90)
+    #在注册窗口建一个注册按钮
+    tk.Button(window_sigh_up,text='Sigh up',command=sigh_to_dic).place(x=150,y=130)
+
+b_login = tk.Button(window,text='Login',bg='gray',command=login_command)
+b_login.place(x=200,y=250)
+b_regi = tk.Button(window,text='Sign up',bg='gray',command=regi_command)
+b_regi.place(x=270,y=250)
+
+window.mainloop()
